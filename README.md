@@ -1,12 +1,12 @@
 ![osticket](https://demo.osticket.com.br/scp/images/ost-logo.png)
 
-whatsfy-osTicket
+whatsfy-osTicket for osTicket 1.17, for osticket 1.15 or less [use this one](https://github.com/luispimenta/whatsfy-osticket)
 ==============
 An plugin for [osTicket](https://osticket.com) to send Whatsapp message with [Whatsfy](https://whatsfy.app/)
 
 Info
 ------
-This plugin uses CURL and was designed/tested with osTicket-1.10.1
+This plugin uses CURL and was designed/tested with osTicket-1.17
 
 ## Requirements
 - php_curl

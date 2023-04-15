@@ -11,11 +11,20 @@ require_once('config.php');
 class WhatsfyPlugin extends Plugin {
 
     var $config_class = "WhatsfyPluginConfig";
+    static $pluginInstance = null;
+
+    private function getPluginInstance(?int $id){
+    	if($id && ($i = $this->getInstance($id)))
+    	    return $i;
+
+    	return $this->getInstances()->first();
+    }
 
     /**
      * The entrypoint of the plugin, keep short, always runs.
      */
     function bootstrap() {
+        self::$pluginInstance = self::getPluginInstance(null);
         Signal::connect('ticket.created', array($this, 'onTicketCreated'));
         Signal::connect('threadentry.created', array($this, 'onTicketUpdated'));
     }
@@ -73,8 +82,8 @@ class WhatsfyPlugin extends Plugin {
             return;
         }
         $url = 'https://api.whatsfy.app/webhook_osticket';
-        $x_api_key = $this->getConfig()->get('whatsfy-x-api-key');
-        $whatsapp_key = $this->getConfig()->get('whatsfy-whatsapp-key');
+        $x_api_key = $this->getConfig(self::$pluginInstance)->get('whatsfy-x-api-key');
+        $whatsapp_key = $this->getConfig(self::$pluginInstance)->get('whatsfy-whatsapp-key');
 
         if (!$x_api_key) {
             $ost->logError('Whatsfy x-api-key Plugin not configured', 'You need to read the Readme and configure before using this.');
@@ -116,6 +125,8 @@ class WhatsfyPlugin extends Plugin {
             if (curl_exec($ch) === false) {
                 throw new \Exception($url . ' - ' . curl_error($ch));
             } else {
+
+                curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 if ($statusCode != '200') {
                     throw new \Exception(
