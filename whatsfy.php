@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 1);
 
 require_once(INCLUDE_DIR . 'class.signal.php');
 require_once(INCLUDE_DIR . 'class.plugin.php');
@@ -104,7 +105,14 @@ class WhatsfyPlugin extends Plugin {
             'status'       => $status,
             'url'          => $cfg->getUrl(),
             'x-api-key'    => $x_api_key,
-            'whatsapp-key' => $whatsapp_key
+            'whatsapp-key' => $whatsapp_key,
+            'closed'       => $ticket->isClosed(),
+            'subject'      => $ticket->getSubject() ? $ticket->getSubject() : '',
+            'update_date'  => $ticket->getUpdateDate() ? Format::datetime($ticket->getUpdateDate()) : '',
+            'help_topic'   => $ticket->getHelpTopic() ? $ticket->getHelpTopic() : '',
+            'user'         => $ticket->getOwner(),
+            'get_status'   => $ticket->getStatus(),
+            'get_state'    => $ticket->getState()
         ];
 
         // Format the payload:
