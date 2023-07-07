@@ -9,9 +9,9 @@ require_once(INCLUDE_DIR . 'class.config.php');
 require_once(INCLUDE_DIR . 'class.format.php');
 require_once('config.php');
 
-class WhatsfyPlugin extends Plugin {
+class SendzapPlugin extends Plugin {
 
-    var $config_class = "WhatsfyPluginConfig";
+    var $config_class = "SendzapPluginConfig";
     static $pluginInstance = null;
 
     private function getPluginInstance(?int $id){
@@ -40,7 +40,7 @@ class WhatsfyPlugin extends Plugin {
     function onTicketCreated(Ticket $ticket) {
         global $cfg;
         if (!$cfg instanceof OsticketConfig) {
-            error_log("Whatsfy plugin called too early.");
+            error_log("Sendzpa plugin called too early.");
             return;
         }
         $status = "created";
@@ -57,7 +57,7 @@ class WhatsfyPlugin extends Plugin {
     function onTicketUpdated(ThreadEntry $entry) {
         global $cfg;
         if (!$cfg instanceof OsticketConfig) {
-            error_log("Whatsfy plugin called too early.");
+            error_log("Sendzap plugin called too early.");
             return;
         }
 
@@ -82,16 +82,16 @@ class WhatsfyPlugin extends Plugin {
             error_log("Webhook plugin called too early.");
             return;
         }
-        $url = 'https://api.whatsfy.app/webhook_osticket';
-        $x_api_key = $this->getConfig(self::$pluginInstance)->get('whatsfy-x-api-key');
-        $whatsapp_key = $this->getConfig(self::$pluginInstance)->get('whatsfy-whatsapp-key');
+        $url = 'https://api.sendzap.app/webhook_osticket';
+        $x_api_key = $this->getConfig(self::$pluginInstance)->get('sendzap-x-api-key');
+        $whatsapp_key = $this->getConfig(self::$pluginInstance)->get('sendzap-whatsapp-key');
 
         if (!$x_api_key) {
-            $ost->logError('Whatsfy x-api-key Plugin not configured', 'You need to read the Readme and configure before using this.');
+            $ost->logError('Sendzap x-api-key Plugin not configured', 'You need to read the Readme and configure before using this.');
         }
 
         if (!$whatsapp_key) {
-            $ost->logError('Whatsfy Whatsapp Key Plugin not configured', 'You need to read the Readme and configure before using this.');
+            $ost->logError('Sendzap Whatsapp Key Plugin not configured', 'You need to read the Readme and configure before using this.');
         }
 
         // Build the payload with the formatted data:
