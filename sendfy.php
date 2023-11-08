@@ -9,9 +9,9 @@ require_once(INCLUDE_DIR . 'class.config.php');
 require_once(INCLUDE_DIR . 'class.format.php');
 require_once('config.php');
 
-class SendzapPlugin extends Plugin {
+class SendfyPlugin extends Plugin {
 
-    var $config_class = "SendzapPluginConfig";
+    var $config_class = "SendfyPluginConfig";
     static $pluginInstance = null;
 
     private function getPluginInstance(?int $id){
@@ -57,7 +57,7 @@ class SendzapPlugin extends Plugin {
     function onTicketUpdated(ThreadEntry $entry) {
         global $cfg;
         if (!$cfg instanceof OsticketConfig) {
-            error_log("Sendzap plugin called too early.");
+            error_log("Sendfy plugin called too early.");
             return;
         }
 
@@ -82,16 +82,16 @@ class SendzapPlugin extends Plugin {
             error_log("Webhook plugin called too early.");
             return;
         }
-        $url = 'https://api.sendzap.app/webhook_osticket';
-        $x_api_key = $this->getConfig(self::$pluginInstance)->get('sendzap-x-api-key');
-        $whatsapp_key = $this->getConfig(self::$pluginInstance)->get('sendzap-whatsapp-key');
+        $url = 'https://api.sendfy.app/webhook_osticket';
+        $x_api_key = $this->getConfig(self::$pluginInstance)->get('sendfy-x-api-key');
+        $whatsapp_key = $this->getConfig(self::$pluginInstance)->get('sendfy-whatsapp-key');
 
         if (!$x_api_key) {
-            $ost->logError('Sendzap x-api-key Plugin not configured', 'You need to read the Readme and configure before using this.');
+            $ost->logError('Sendfy x-api-key Plugin not configured', 'You need to read the Readme and configure before using this.');
         }
 
         if (!$whatsapp_key) {
-            $ost->logError('Sendzap Whatsapp Key Plugin not configured', 'You need to read the Readme and configure before using this.');
+            $ost->logError('Sendfy Whatsapp Key Plugin not configured', 'You need to read the Readme and configure before using this.');
         }
 
         // Build the payload with the formatted data:
