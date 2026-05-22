@@ -141,6 +141,8 @@ class SendfyPlugin extends Plugin {
             'get_state'      => $ticket->getState(),
             'send_link'      => (bool) $send_link,
             'custom_message' => $custom_message,
+            'ticket_id'      => $ticket->getId()
+
         ];
 
         // Format the payload:
