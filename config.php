@@ -43,6 +43,37 @@ class SendfyPluginConfig extends PluginConfig {
               'size'   => 130,
               'length' => 300
             )
+          )),
+          'sendfy-send-ticket-link' => new BooleanField(array(
+            'label'       => $__('Enviar link do ticket na mensagem'),
+            'default'     => false,
+            'configuration' => array(
+              'desc' => $__('Quando ativo, o link do ticket será incluído na mensagem enviada.')
+            )
+          )),
+          'sendfy-message-created' => new TextareaField(array(
+            'label'       => $__('Mensagem de abertura do ticket'),
+            'required'    => false,
+            'default'     => '',
+            'placeholder' => $__('Ex: Olá {staff}, o ticket #{number} foi aberto. Assunto: {subject}'),
+            'hint'        => $__('Parâmetros disponíveis: {staff}, {title}, {number}, {subject}, {status}, {help_topic}'),
+            'configuration' => array(
+              'rows'   => 4,
+              'cols'   => 60,
+              'length' => 1000
+            )
+          )),
+          'sendfy-message-updated' => new TextareaField(array(
+            'label'       => $__('Mensagem de atualização do ticket'),
+            'required'    => false,
+            'default'     => '',
+            'placeholder' => $__('Ex: Olá {staff}, o ticket #{number} foi atualizado. Status: {status}'),
+            'hint'        => $__('Parâmetros disponíveis: {staff}, {title}, {number}, {subject}, {status}, {help_topic}'),
+            'configuration' => array(
+              'rows'   => 4,
+              'cols'   => 60,
+              'length' => 1000
+            )
           ))
         );
     }

@@ -83,8 +83,12 @@ class SendfyPlugin extends Plugin {
             return;
         }
         $url = 'https://api.sendfy.app/webhook_osticket';
-        $x_api_key = $this->getConfig(self::$pluginInstance)->get('sendfy-x-api-key');
-        $whatsapp_key = $this->getConfig(self::$pluginInstance)->get('sendfy-whatsapp-key');
+        $config = $this->getConfig(self::$pluginInstance);
+        $x_api_key    = $config->get('sendfy-x-api-key');
+        $whatsapp_key = $config->get('sendfy-whatsapp-key');
+        $send_link    = $config->get('sendfy-send-ticket-link');
+        $msg_created  = $config->get('sendfy-message-created');
+        $msg_updated  = $config->get('sendfy-message-updated');
 
         if (!$x_api_key) {
             $ost->logError('Sendfy x-api-key Plugin not configured', 'You need to read the Readme and configure before using this.');
@@ -95,24 +99,48 @@ class SendfyPlugin extends Plugin {
         }
 
         // Build the payload with the formatted data:
-        $staff = $ticket->getStaff();
+        $staff      = $ticket->getStaff();
+        $staff_name = $staff ? $staff->getUsername() : "";
+        $number     = $ticket->getNumber();
+        $subject    = $ticket->getSubject() ? $ticket->getSubject() : '';
+        $help_topic = $ticket->getHelpTopic() ? $ticket->getHelpTopic() : '';
+        $get_status = $ticket->getStatus();
+
+        $params = [
+            '{staff}'      => $staff_name,
+            '{title}'      => $subject,
+            '{number}'     => $number,
+            '{subject}'    => $subject,
+            '{status}'     => $get_status,
+            '{help_topic}' => $help_topic,
+        ];
+
+        $custom_message = '';
+        if ($status === 'created' && $msg_created) {
+            $custom_message = strtr($msg_created, $params);
+        } elseif ($status === 'updated' && $msg_updated) {
+            $custom_message = strtr($msg_updated, $params);
+        }
+
         $payload['body'] = [
-            'staff'        => $staff ? $staff->getUsername() : "",
-            'staff-mobile' => $staff ? $staff->mobile : "",
-            'staff-phone'  => $staff ? $staff->phone : "",
-            'title'        => $ticket->getSubject(),
-            'number'       => $ticket->getNumber(),
-            'status'       => $status,
-            'url'          => $cfg->getUrl(),
-            'x-api-key'    => $x_api_key,
-            'whatsapp-key' => $whatsapp_key,
-            'closed'       => $ticket->isClosed(),
-            'subject'      => $ticket->getSubject() ? $ticket->getSubject() : '',
-            'update_date'  => $ticket->getUpdateDate() ? Format::datetime($ticket->getUpdateDate()) : '',
-            'help_topic'   => $ticket->getHelpTopic() ? $ticket->getHelpTopic() : '',
-            'user'         => $ticket->getOwner(),
-            'get_status'   => $ticket->getStatus(),
-            'get_state'    => $ticket->getState()
+            'staff'          => $staff_name,
+            'staff-mobile'   => $staff ? $staff->mobile : "",
+            'staff-phone'    => $staff ? $staff->phone : "",
+            'title'          => $subject,
+            'number'         => $number,
+            'status'         => $status,
+            'url'            => $cfg->getUrl(),
+            'x-api-key'      => $x_api_key,
+            'whatsapp-key'   => $whatsapp_key,
+            'closed'         => $ticket->isClosed(),
+            'subject'        => $subject,
+            'update_date'    => $ticket->getUpdateDate() ? Format::datetime($ticket->getUpdateDate()) : '',
+            'help_topic'     => $help_topic,
+            'user'           => $ticket->getOwner(),
+            'get_status'     => $get_status,
+            'get_state'      => $ticket->getState(),
+            'send_link'      => (bool) $send_link,
+            'custom_message' => $custom_message,
         ];
 
         // Format the payload:
