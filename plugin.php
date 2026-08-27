@@ -2,7 +2,7 @@
 
 return array(
     'id'          => 'osticket:sendfy',
-    'version'     => '1.1.0',
+    'version'     => '1.1.1',
     'name'        => 'Sendfy Whatsapp Notification >= 1.17',
     'author'      => 'Luis Pimenta',
     'description' => 'Whatsapp Notification on new/update ticket for osTicket',
